@@ -388,3 +388,25 @@ open class RSAUtils: NSObject {
         return decryptWithRSAKey(encryptedData, rsaKeyRef: keyRef!, padding: SecPadding())
     }
 }
+
+
+extension RSAUtils {
+    
+    static open func encryptStrWithRSAPublicKey(_ str: String, pubkeyBase64: String, keychainTag: String) -> String? {
+        
+        guard let base64Data = str.data(using: .utf8) else { return nil }
+        
+        let data = RSAUtils.encryptWithRSAPublicKey(base64Data, pubkeyBase64: pubkeyBase64, keychainTag: keychainTag);
+        
+        return data?.base64EncodedString()
+    }
+    
+    static open func decryptStrWithRSAPrivateKey(_ str: String, privkeyBase64: String, keychainTag: String) -> String? {
+        
+        guard let base64Data = Data.init(base64Encoded: str) else { return nil }
+        
+        guard let decryptData = RSAUtils.decryptWithRSAPrivateKey(base64Data, privkeyBase64: privkeyBase64, keychainTag: keychainTag) else { return nil }
+        
+        return String.init(data: decryptData, encoding: .utf8)
+    }
+}
